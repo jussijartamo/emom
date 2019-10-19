@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <title>EMOM</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <script type="text/javascript" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/fitty@2.2.6/dist/fitty.min.js"></script>
   <style>
       body {
         text-align: center;
@@ -13,8 +15,6 @@
 </head>
 <body>
   <div id="display"></div>
-  <script type="text/javascript" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/fitty@2.2.6/dist/fitty.min.js"></script>
   <script type="text/babel" data-presets="es2015, react">
     fitty('#display');
     const a=new AudioContext()
