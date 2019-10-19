@@ -15,9 +15,14 @@
           background-color: black;
           color: white;
       }
+      #progress-bar {
+          background-color: #5cb85c;
+          height: 25px;
+      }
   </style>
 </head>
 <body>
+  <div id="progress-bar" role="progressbar" style="width: 0%"></div>
   <div id="display"></div>
 
   <script type="text/babel" data-presets="es2015, react">
@@ -31,7 +36,12 @@
         return result
     }
 
-    let {duration, steps, forward, silent} = parse(window.location.search)
+    let {duration, steps, forward, silent, hide_bar} = parse(window.location.search)
+    if(hide_bar) {
+        const bar = document.getElementById("progress-bar")
+        bar.style.display = "none";
+        console.log("Hiding progress bar!")
+    }
     fitty('#display');
     let beep = () => {}
     try {
@@ -65,6 +75,20 @@
     
     const pad = (num, size) => ('000000000' + num).substr(-size)
 
+    let totalSteps = 0
+    let stepsDone = 0
+    const setBarPercentage = p => {
+        const bar = document.getElementById("progress-bar")
+        bar.style.width = `${p}%`
+    }
+
+    const progress = () => {
+        if(totalSteps !== 0) {
+            setBarPercentage(Math.round((stepsDone/totalSteps)*100.0*100.0)/100.0)
+        }
+        stepsDone++
+    }
+
     while (duration > 0) {
         const even = index % 2 == 0
         const step = steps[index % steps.length]
@@ -73,6 +97,8 @@
         console.log(`Adding a step of ${step}`)
         program.push(beep)
         for (let t = 0; t < step; t++) {
+            totalSteps++
+            program.push(progress)
             const time = forward ? t : step - t
             var minutes = Math.floor(time / 60);
             var seconds = time - minutes * 60;
@@ -102,6 +128,7 @@
             element.innerHTML = "DONE"
             const body = document.getElementsByTagName("BODY")[0]
             body.className = ""
+            setBarPercentage(100)
         }
     }
 
