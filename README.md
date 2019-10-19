@@ -1,6 +1,9 @@
 # EMOM
 Emom timer (stands for every minute on the minute)
 
+## [BRING SALLY UP](https://raw.githack.com/jussijartamo/emom/master/index.html?duration=204&steps=0,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,10,2,4,2,4,2,4,2,4,2,10,2,4,2,4,2,4,2,4,2,10,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,10)
+[Bring Sally Up Squat Challenge](https://youtu.be/bql6sIU2A7k)
+
 ## [TABATA](https://raw.githack.com/jussijartamo/emom/master/index.html?duration=240&steps=20,10)
 ## [8MIN TABATA](https://raw.githack.com/jussijartamo/emom/master/index.html?duration=480&steps=20,10)
 ## [20MIN TABATA](https://raw.githack.com/jussijartamo/emom/master/index.html?duration=1200&steps=20,10)
