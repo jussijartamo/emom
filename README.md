@@ -22,6 +22,7 @@ Emom timer (stands for every minute on the minute)
 | steps         | Comma separated list of steps in seconds. Even is working phase. |
 | silent        | Silences the beep noise.                                         |
 | forward       | Timer counts forward. Default timer counts towards zero.         |
+| hide_bar      | Hides progress bar when true.                                    |
 
 Example:
 https://raw.githack.com/jussijartamo/emom/master/index.html?duration=120&steps=20,10,5,10&silent=true&forward=false
