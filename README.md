@@ -13,3 +13,15 @@ Emom timer (stands for every minute on the minute)
 ## [15MIN](https://raw.githack.com/jussijartamo/emom/master/index.html#duration=900&steps=60)
 ## [30MIN](https://raw.githack.com/jussijartamo/emom/master/index.html#duration=1800&steps=60)
 ## [60MIN](https://raw.githack.com/jussijartamo/emom/master/index.html#duration=3600&steps=60)
+
+## Create custom timer
+
+| Parameter     | Description                                                      |
+| ------------- |:----------------------------------------------------------------:|
+| duration      | Program duration in seconds                                      |
+| steps         | Comma separated list of steps in seconds. Even is working phase. |
+| silent        | Silences the beep noise.                                         |
+| forward       | Timer counts forward. Default timer counts towards zero.         |
+
+Example:
+https://raw.githack.com/jussijartamo/emom/master/index.html#duration=120&steps=20,10,5,10&silent=true&forward=false
