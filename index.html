@@ -11,31 +11,17 @@
         text-align: center;
         font-family: 'Roboto Mono', monospace;
       }
+      .inverted {
+          background-color: black;
+          color: white;
+      }
   </style>
 </head>
 <body>
   <div id="display"></div>
-  <script type="text/babel" data-presets="es2015, react">
-    fitty('#display');
-    const a=new AudioContext()
-    const beep = () => {
-        const freq = 520
-        const vol = 50
-        const duration = 200
-        const v = a.createOscillator()
-        const u = a.createGain()
-        v.connect(u)
-        v.frequency.value=freq
-        v.type="square"
-        u.connect(a.destination)
-        u.gain.value=vol*0.01
-        v.start(a.currentTime)
-        v.stop(a.currentTime+duration*0.001)
-    }
 
-    let program = [
-        "3", beep, "2", beep, "1", beep, beep, beep
-    ]
+  <script type="text/babel" data-presets="es2015, react">
+    try {
     const parse = (url) => {
         let result = {}
         url.substr(1).split("&").forEach(function(part) {
@@ -45,13 +31,38 @@
         return result
     }
 
-    let {duration, steps, forward} = parse(window.location.hash)
+    let {duration, steps, forward, silent} = parse(window.location.hash)
+    fitty('#display');
+    
+    const a=new AudioContext()
+    const beep = () => {
+        if(!silent) {
+            const freq = 520
+            const vol = 50
+            const duration = 200
+            const v = a.createOscillator()
+            const u = a.createGain()
+            v.connect(u)
+            v.frequency.value=freq
+            v.type="square"
+            u.connect(a.destination)
+            u.gain.value=vol*0.01
+            v.start(a.currentTime)
+            v.stop(a.currentTime+duration*0.001)
+        }
+    }
+
+    let program = [
+        {value:"3"}, beep, {value:"2"}, beep, {value:"1"}, beep, beep, beep
+    ]
+    
     steps = steps.split(",").map(step =>  parseInt(step))
     let index = 0
     
     const pad = (num, size) => ('000000000' + num).substr(-size)
 
     while (duration > 0) {
+        const even = index % 2 == 0
         const step = steps[index % steps.length]
         duration = duration - step
         index++
@@ -61,7 +72,9 @@
             const time = forward ? t : step - t
             var minutes = Math.floor(time / 60);
             var seconds = time - minutes * 60;
-            program.push(`${pad(minutes,2)}:${pad(seconds,2)}`)
+            program.push(
+                {value: `${pad(minutes,2)}:${pad(seconds,2)}`,
+                 inverted: even})
         }
     }
     
@@ -70,15 +83,29 @@
     const tick = () => {
         const [next, ...tail] = program
         program = tail
-        if(next instanceof Function) {
-            next()
-            tick()
+        if(next) {
+            if(next instanceof Function) {
+                next()
+                tick()
+            } else {
+                const element = document.getElementById("display")
+                element.innerHTML = next.value
+                const body = document.getElementsByTagName("BODY")[0]
+                body.className = next.inverted ? "inverted" : ""
+            }
         } else {
-            document.getElementById("display").innerHTML = next
+            const element = document.getElementById("display")
+            element.innerHTML = "DONE"
+            const body = document.getElementsByTagName("BODY")[0]
+            body.className = ""
         }
     }
 
     setInterval(tick, 1000);
+    } catch(err) {
+        const element = document.getElementById("display")
+        element.innerHTML = "INCORRECT PARAMETERS"
+    }
   </script>
 </body>
 </html>
