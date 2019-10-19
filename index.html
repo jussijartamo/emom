@@ -31,7 +31,7 @@
         return result
     }
 
-    let {duration, steps, forward, silent} = parse(window.location.hash)
+    let {duration, steps, forward, silent} = parse(window.location.search)
     fitty('#display');
     
     const a=new AudioContext()
