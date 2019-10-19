@@ -33,9 +33,10 @@
 
     let {duration, steps, forward, silent} = parse(window.location.search)
     fitty('#display');
-    
+    let beep = () => {}
+    try {
     const a=new AudioContext()
-    const beep = () => {
+    beep = () => {
         if(!silent) {
             const freq = 520
             const vol = 50
@@ -50,6 +51,9 @@
             v.start(a.currentTime)
             v.stop(a.currentTime+duration*0.001)
         }
+    }
+    } catch(e) {
+      console.log('no audio!')
     }
 
     let program = [
