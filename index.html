@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>EMOM</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <style>
+      body {
+        text-align: center;
+        font-family: 'Roboto Mono', monospace;
+      }
+  </style>
+</head>
+<body>
+  <div id="display"></div>
+  <script type="text/javascript" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/fitty@2.2.6/dist/fitty.min.js"></script>
+  <script type="text/babel" data-presets="es2015, react">
+    fitty('#display');
+    const a=new AudioContext()
+    const beep = () => {
+        const freq = 520
+        const vol = 50
+        const duration = 200
+        const v = a.createOscillator()
+        const u = a.createGain()
+        v.connect(u)
+        v.frequency.value=freq
+        v.type="square"
+        u.connect(a.destination)
+        u.gain.value=vol*0.01
+        v.start(a.currentTime)
+        v.stop(a.currentTime+duration*0.001)
+    }
+
+    let program = [
+        "3", beep, "2", beep, "1", beep, beep, beep
+    ]
+    const parse = (url) => {
+        let result = {}
+        url.substr(1).split("&").forEach(function(part) {
+            const item = part.split("=")
+            result[item[0]] = decodeURIComponent(item[1])
+        })
+        return result
+    }
+
+    let {duration, steps, forward} = parse(window.location.hash)
+    steps = steps.split(",").map(step =>  parseInt(step))
+    let index = 0
+    
+    const pad = (num, size) => ('000000000' + num).substr(-size)
+
+    while (duration > 0) {
+        const step = steps[index % steps.length]
+        duration = duration - step
+        index++
+        console.log(`Adding a step of ${step}`)
+        program.push(beep)
+        for (let t = 0; t < step; t++) {
+            const time = forward ? t : step - t
+            var minutes = Math.floor(time / 60);
+            var seconds = time - minutes * 60;
+            program.push(`${pad(minutes,2)}:${pad(seconds,2)}`)
+        }
+    }
+    
+    console.log(`Duration is ${duration} seconds and steps = ${steps}`)
+    
+    const tick = () => {
+        const [next, ...tail] = program
+        program = tail
+        if(next instanceof Function) {
+            next()
+            tick()
+        } else {
+            document.getElementById("display").innerHTML = next
+        }
+    }
+
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
