@@ -10,6 +10,7 @@
       body {
         text-align: center;
         font-family: 'Roboto Mono', monospace;
+        font-size: 32px;
       }
       .inverted {
           background-color: black;
@@ -22,10 +23,11 @@
   </style>
 </head>
 <body>
-  <div id="progress-bar" role="progressbar" style="width: 0%"></div>
-  <div id="display"></div>
+<div id="progress-bar" role="progressbar" style="width: 0%"></div>
+<div id="total"></div>
+<div id="display"></div>
 
-  <script type="text/babel" data-presets="es2015, react">
+<script type="text/babel" data-presets="es2015, react">
     try {
     const parse = (url) => {
         let result = {}
@@ -37,6 +39,7 @@
     }
 
     let {duration, steps, forward, silent, hide_bar} = parse(window.location.search)
+
     if(hide_bar) {
         const bar = document.getElementById("progress-bar")
         bar.style.display = "none";
@@ -74,9 +77,15 @@
     let index = 0
     
     const pad = (num, size) => ('000000000' + num).substr(-size)
-
+    const timeToClock = (time) => {
+        var minutes = Math.floor(time / 60);
+        var seconds = time - minutes * 60;
+        return `${pad(minutes,2)}:${pad(seconds,2)}`
+    }
     let totalSteps = 0
     let stepsDone = 0
+    let totalDuration = 0
+    
     const setBarPercentage = p => {
         const bar = document.getElementById("progress-bar")
         bar.style.width = `${p}%`
@@ -86,13 +95,19 @@
         if(totalSteps !== 0) {
             setBarPercentage(Math.round((stepsDone/totalSteps)*100.0*100.0)/100.0)
         }
-        stepsDone++
+        const element = document.getElementById("total")
+        element.innerHTML = timeToClock(totalDuration)
+        if(totalSteps > stepsDone) {
+            stepsDone++
+            totalDuration--
+        }
     }
 
     while (duration > 0) {
         const even = index % 2 == 0
         const step = steps[index % steps.length]
         duration = duration - step
+        totalDuration = totalDuration + step
         index++
         console.log(`Adding a step of ${step}`)
         program.push(beep)
@@ -100,14 +115,12 @@
             totalSteps++
             program.push(progress)
             const time = forward ? t : step - t
-            var minutes = Math.floor(time / 60);
-            var seconds = time - minutes * 60;
             program.push(
-                {value: `${pad(minutes,2)}:${pad(seconds,2)}`,
+                {value: timeToClock(time),
                  inverted: even})
         }
     }
-    
+
     console.log(`Duration is ${duration} seconds and steps = ${steps}`)
     
     const tick = () => {
@@ -128,7 +141,7 @@
             element.innerHTML = "DONE"
             const body = document.getElementsByTagName("BODY")[0]
             body.className = ""
-            setBarPercentage(100)
+            progress()
         }
     }
 
